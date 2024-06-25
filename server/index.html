@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dashboard</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="../public/CSS/normalize.css">
+    <link rel="stylesheet" href="../public/CSS/style.css">
+</head>
+
+<body>
+    <!-- Estructura -->
+    <div class="contenedor">
+        <!-- Panel izquierdo -->
+        <div class="container">
+            <div class="chart-container">
+                <h3>Grafica de la Velocidad</h3>
+                <canvas id="chartSpeed"></canvas>
+                <table id="table-speed">
+                    <thead>
+                        <tr>
+                            <th>Tiempo (s)</th>
+                            <th>Velocidad</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="chart-container">
+                <h3>Grafica de la Temperatura</h3>
+                <canvas id="chartTemperature"></canvas>
+                <table id="table-temperature">
+                    <thead>
+                        <tr>
+                            <th>Tiempo (s)</th>
+                            <th>Temperatura</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Panel medio -->
+        <div class="modelo">
+            <div id="rectangle3D"></div>
+        </div>
+        <!-- Panel derecho -->
+        <div class="container">
+            <div class="chart-container">
+                <h3>Grafica de la Presión Atmosférica</h3>
+                <canvas id="chartPressure"></canvas>
+                <table id="table-pressure">
+                    <thead>
+                        <tr>
+                            <th>Tiempo (s)</th>
+                            <th>Presión</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="chart-container">
+                <h3>Grafica de Humedad</h3>
+                <canvas id="chartHeat"></canvas>
+                <table id="table-humidity">
+                    <thead>
+                        <tr>
+                            <th>Tiempo (s)</th>
+                            <th>Humedad</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const socket = io();
+        const dataLimit = 20;
+
+        function updateChart(chart, label, value) {
+            if (chart.data.labels.length >= dataLimit) {
+                chart.data.labels.shift();
+                chart.data.datasets.forEach(dataset => {
+                    dataset.data.shift();
+                });
+            }
+
+            chart.data.labels.push(label);
+            chart.data.datasets.forEach(dataset => {
+                dataset.data.push(value);
+            });
+
+            chart.update();
+        }
+
+        function initChart(ctx, label) {
+            return new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: label,
+                        data: [],
+                        backgroundColor: 'rgba(66, 134, 244, 0.5)',
+                        borderColor: 'rgba(66, 134, 244, 1)',
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+        function updateTable(table, time, value) {
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+
+            let row = table.insertRow(-1);
+            let cell1 = row.insertCell(0);
+            let cell2 = row.insertCell(1);
+            cell1.textContent = time;
+            cell2.textContent = value;
+        }
+
+        const chartSpeed = initChart(document.getElementById("chartSpeed").getContext("2d"), 'Velocidad');
+        const chartTemperature = initChart(document.getElementById("chartTemperature").getContext("2d"), 'Temperatura');
+        const chartPressure = initChart(document.getElementById("chartPressure").getContext("2d"), 'Presión');
+        const chartHeat = initChart(document.getElementById("chartHeat").getContext("2d"), 'Humedad');
+
+        const tableSpeed = document.getElementById("table-speed");
+        const tableTemperature = document.getElementById("table-temperature");
+        const tablePressure = document.getElementById("table-pressure");
+        const tableHumidity = document.getElementById("table-humidity");
+
+        socket.on('arduino:data', function (data) {
+            updateChart(chartSpeed, data.time, data.speed);
+            updateChart(chartTemperature, data.time, data.temperature);
+            updateChart(chartPressure, data.time, data.pressure);
+            updateChart(chartHeat, data.time, data.humidity);
+
+            updateTable(tableSpeed, data.time, data.speed);
+            updateTable(tableTemperature, data.time, data.temperature);
+            updateTable(tablePressure, data.time, data.pressure);
+            updateTable(tableHumidity, data.time, data.humidity);
+        });
+
+        // Código para el modelo 3D
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, 300 / 200, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(300, 200);
+        document.getElementById('rectangle3D').appendChild(renderer.domElement);
+
+        const geometry = new THREE.BoxGeometry();
+        const material = new THREE.MeshBasicMaterial({ color: 0xff5733 });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+
+</html>

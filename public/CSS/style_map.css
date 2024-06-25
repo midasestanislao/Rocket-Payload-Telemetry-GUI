@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Poppins:wght@200;300;400;500;600;700&family=Staatliches&display=swap');
+
+html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 62.5%; /* 1rem = 10px */
+    font-family: "Poppins", sans-serif;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+/* NAVBAR */
+.navbar {
+    padding: 1.5rem 0; /* Aumenta el padding vertical */
+}
+
+.navbar-brand {
+    font-size: 2rem; /* Aumenta el tamaño de fuente */
+}
+
+.navbar-nav .nav-link {
+    font-size: 1.8rem; /* Aumenta el tamaño de fuente */
+    padding: 1rem 2rem; /* Aumenta el padding vertical y horizontal */
+}
+
+.main-container-model {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Espacio entre las columnas */
+    padding: 10px;
+}
+
+.modelo {
+    width: 32%; /* Un tercio de la página */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#map-container {
+    width: 66%; /* Dos tercios de la página */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1rem; /* Disminuir margen superior */
+    margin-bottom: 2rem; /* Disminuir margen inferior */
+    font-size: 1.4rem; /* Aumentar el tamaño de la fuente en las tablas */
+}
+
+th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+#canvas {
+    width: 100%;
+    height: 70rem; /* Disminuir la altura para el modelo 3D */
+}
+
+#mapa {
+    width: 100%;
+    height: 70rem; /* Disminuir la altura para el mapa */
+    background-color: #f0f0f0; /* Color de fondo para el contenedor del mapa */
+}
+
+.table-container {
+    width: 100%;
+    margin-top: 10px; /* Disminuir el margen superior */
+}
+
+/* Computadoras pequeñas y tablets en orientación horizontal */
+@media (min-width: 1024px) {
+    .main-container_model {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+/* Tablets en orientación vertical */
+@media (max-width: 1024px) {
+    .main-container_model {
+        flex-direction: column;
+    }
+}
+
+/* Tablets en orientación vertical */
+@media (max-width: 768px) {
+    .main-container_model {
+        flex-direction: column;
+    }
+}
+
+/* Celulares */
+@media (max-width: 480px) {
+    .main-container_model {
+        flex-direction: column;
+    }
+}

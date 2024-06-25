@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Mapping -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="CSS/normalize.css">
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="img/image_cosmo.png" alt="Cosmoblastos Logo" class="logo">
+                <span class="brand-text">Cosmoblastos</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="map.html">Map</a>
+                    </li>
+                </ul> -->
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="main-container">
+        <div class="container">
+            <div class="chart-container">
+                <h3>Temperature</h3>
+                <canvas id="chartTemperature"></canvas>
+                <table id="table-temperature">
+                    <thead>
+                        <tr>
+                            <th>Time (s)</th>
+                            <th>External Temperature (C)</th>
+                            <th>Internal Temperature (C)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="chart-container">
+                <h3>Pressure</h3>
+                <canvas id="chartPressure"></canvas>
+                <table id="table-pressure">
+                    <thead>
+                        <tr>
+                            <th>Time (s)</th>
+                            <th>Internal Pressure (PA)</th>
+                            <th>External Pressure (PA)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="chart-container">
+                <h3>Humidity</h3>
+                <canvas id="chartHumidity"></canvas>
+                <table id="table-humidity">
+                    <thead>
+                        <tr>
+                            <th>Time (s)</th>
+                            <th>Internal Humidity (%)</th>
+                            <th>External Humidity (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="chart-container">
+                <h3>Altitude</h3>
+                <canvas id="chartAltitude"></canvas>
+                <table id="table-altitude">
+                    <thead>
+                        <tr>
+                            <th>Time (s)</th>
+                            <th>Altitude (meters)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="chart-container">
+                <h3>Battery</h3>
+                <canvas id="chartBattery"></canvas>
+                <table id="table-battery">
+                    <thead>
+                        <tr>
+                            <th>Time (s)</th>
+                            <th>Battery 1 (%)</th>
+                            <th>Battery 2 (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container-model">
+        <div class="modelo">
+            <canvas id="canvas"></canvas>
+            <div class="table-container">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Axis</th>
+                            <th scope="col">Rotation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gyroTable">
+                        <tr>
+                            <td>X</td>
+                            <td id="gyroX">0</td>
+                        </tr>
+                        <tr>
+                            <td>Y</td>
+                            <td id="gyroY">0</td>
+                        </tr>
+                        <tr>
+                            <td>Z</td>
+                            <td id="gyroZ">0</td>
+                        </tr>
+                        <tr>
+                            <td>Acceleration X</td>
+                            <td id="accX">0</td>
+                        </tr>
+                        <tr>
+                            <td>Acceleration Y</td>
+                            <td id="accY">0</td>
+                        </tr>
+                        <tr>
+                            <td>Acceleration Z</td>
+                            <td id="accZ">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="map-container">
+            <div id="mapa"></div>
+            <div class="table-container">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Parameter</th>
+                            <th scope="col">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody id="locationTable">
+                        <tr>
+                            <td>Latitude</td>
+                            <td id="latitude">0</td>
+                        </tr>
+                        <tr>
+                            <td>Longitude</td>
+                            <td id="longitude">0</td>
+                        </tr>
+                        <tr>
+                            <td>Satellite</td>
+                            <td id="satellite">0</td>
+                        </tr>
+                        <tr>
+                            <td>Precision</td>
+                            <td id="precision">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- J A V A S C R I P T -->
+    <script>
+        const socket = io();
+        const dataLimit = 20;
+
+        function updateChart(chart, label, value1, value2) {
+            if (chart.data.labels.length >= dataLimit) {
+                chart.data.labels.shift();
+                chart.data.datasets.forEach(dataset => {
+                    dataset.data.shift();
+                });
+            }
+
+            chart.data.labels.push(label);
+            chart.data.datasets[0].data.push(value1);
+            chart.data.datasets[1].data.push(value2);
+
+            chart.update();
+        }
+
+        function updateSingleChart(chart, label, value1) {
+            if (chart.data.labels.length >= dataLimit) {
+                chart.data.labels.shift();
+                chart.data.datasets.forEach(dataset => {
+                    dataset.data.shift();
+                });
+            }
+
+            chart.data.labels.push(label);
+            chart.data.datasets[0].data.push(value1);
+
+            chart.update();
+        }
+
+        function initChart(ctx, label1, label2) {
+            return new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: label1,
+                            data: [],
+                            backgroundColor: 'rgba(66, 134, 244, 0.5)',
+                            borderColor: 'rgba(66, 134, 244, 1)',
+                            fill: true
+                        },
+                        {
+                            label: label2,
+                            data: [],
+                            backgroundColor: 'rgba(244, 66, 66, 0.5)',
+                            borderColor: 'rgba(244, 66, 66, 1)',
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+        function initSingleChart(ctx, label1, typeChart) {
+            return new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: label1,
+                            data: [],
+                            backgroundColor: 'rgba(66, 134, 244, 0.5)',
+                            borderColor: 'rgba(66, 134, 244, 1)',
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+        function updateTable(table, time, value1, value2) {
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+
+            let row = table.insertRow(-1);
+            let cell1 = row.insertCell(0);
+            let cell2 = row.insertCell(1);
+            let cell3 = row.insertCell(2);
+            cell1.textContent = time;
+            cell2.textContent = value1;
+            cell3.textContent = value2;
+        }
+
+        function updateSingleTable(table, time, value1) {
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+
+            let row = table.insertRow(-1);
+            let cell1 = row.insertCell(0);
+            let cell2 = row.insertCell(1);
+            cell1.textContent = time;
+            cell2.textContent = value1;
+        }
+
+
+
+        const chartTemperature = initChart(document.getElementById("chartTemperature").getContext("2d"), 'External Temperature', 'Internal Temperature');
+        const chartPressure = initChart(document.getElementById("chartPressure").getContext("2d"), 'Internal Pressure', 'External Pressure');
+        const chartHumidity = initChart(document.getElementById("chartHumidity").getContext("2d"), 'Internal Humidity', 'External Humidity');
+        const chartAltitude = initSingleChart(document.getElementById("chartAltitude").getContext("2d"), 'Altitude');
+        const chartBattery = initChart(document.getElementById("chartBattery").getContext("2d"), 'Battery 1', 'Battery 2');
+
+        const tableTemperature = document.getElementById("table-temperature");
+        const tablePressure = document.getElementById("table-pressure");
+        const tableHumidity = document.getElementById("table-humidity");
+        const tableAltitude = document.getElementById("table-altitude");
+        const tableBattery = document.getElementById("table-battery");
+
+        const map = L.map('mapa').setView([32.9914, -106.9723], 12);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        let markers = [];  // Array to hold markers
+
+        socket.on('arduino:data', function (data) {
+            console.log(data)
+            // Add new marker
+            let marker = L.marker([data.latitude, data.longitude]).addTo(map)
+                .bindPopup('Location')
+                .openPopup();
+
+            // Push marker to array
+            markers.push(marker);
+
+            // If there are more than 5 markers, remove the oldest one
+            if (markers.length > 5) {
+                let oldestMarker = markers.shift();
+                map.removeLayer(oldestMarker);
+            }
+
+            document.getElementById('latitude').innerText = data.latitude;
+            document.getElementById('longitude').innerText = data.longitude;
+            document.getElementById('satellite').innerText = data.satellite;
+            document.getElementById('precision').innerText = data.precision;
+
+            updateChart(chartTemperature, data.time, data.temperature_1, data.temperature_2);
+            updateChart(chartPressure, data.time, data.pressure_1, data.pressure_2);
+            updateChart(chartHumidity, data.time, data.humidity_1, data.humidity_2);
+            updateSingleChart(chartAltitude, data.time, data.altitud);
+            updateChart(chartBattery, data.time, data.battery_1, data.battery_2);
+
+            updateTable(tableTemperature, data.time, data.temperature_1, data.temperature_2);
+            updateTable(tablePressure, data.time, data.pressure_1, data.pressure_2);
+            updateTable(tableHumidity, data.time, data.humidity_1, data.humidity_2);
+            updateSingleTable(tableAltitude, data.time, data.altitud);
+            updateTable(tableBattery, data.time, data.battery_1, data.battery_2);
+
+            document.getElementById('gyroX').innerText = data.gyrX;
+            document.getElementById('gyroY').innerText = data.gyrY;
+            document.getElementById('gyroZ').innerText = data.gyrZ;
+            document.getElementById('accX').innerText = data.accX;
+            document.getElementById('accY').innerText = data.accY;
+            document.getElementById('accZ').innerText = data.accZ;
+
+            let deltaTime = 0.50; // 10 ms per frame
+            let xAxe = data.gyrY;
+            let yAxe = data.gyrX;
+            let zAxe = data.gyrZ;
+            // MALA
+            // let xAxe = data.gyrX;
+            // let yAxe = data.gyrY;
+            // let zAxe = data.gyrZ;
+            
+
+            // 3D Model
+            var canvas = document.getElementById("canvas");
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            var scene = new THREE.Scene();
+            scene.background = new THREE.Color();
+
+            var camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
+            camera.position.z = 5;
+
+            var renderer = new THREE.WebGLRenderer({ canvas: canvas });
+
+            // var geometry = new THREE.BoxGeometry(5, 1, 4); 
+            // var material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+            var geometry = new THREE.BoxGeometry(2.5, 0.5, 2);
+
+            var materials = [
+                new THREE.MeshBasicMaterial({ color: 0xff0000 }), // Frente
+                new THREE.MeshBasicMaterial({ color: 0x00ff00 }), // Atrás
+                new THREE.MeshBasicMaterial({ color: 0x0000ff }), // Arriba
+                new THREE.MeshBasicMaterial({ color: 0xffff00 }), // Abajo
+                new THREE.MeshBasicMaterial({ color: 0xff00ff }), // Izquierda
+                new THREE.MeshBasicMaterial({ color: 0x00ffff })  // Derecha
+            ];
+
+            var cube = new THREE.Mesh(geometry, materials);
+            scene.add(cube);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                cube.rotation.x = (xAxe * deltaTime);
+                cube.rotation.y = (yAxe * deltaTime);
+                cube.rotation.z = (zAxe * deltaTime);
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "arduino_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "start": "node server/script.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "serialport": "^12.0.0",
+    "socket.io": "^4.7.5"
+  }
+}

@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Poppins:wght@200;300;400;500;600;700&family=Staatliches&display=swap');
+
+:root {
+    --color_gray: #808080;
+}
+
+html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 62.5%; /* 1rem = 10px */
+    font-family: "Poppins", sans-serif;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+/* NAVBAR */
+.navbar {
+    padding: 3rem 0; /* Aumenta el padding vertical */
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center; /* Centra verticalmente los elementos dentro de navbar-brand */
+}
+
+.navbar-brand .logo {
+    height: 4rem; /* Ajusta la altura de la imagen */
+    width: auto; /* Mantiene la proporción de la imagen */
+    margin-right: 1rem; /* Espacio entre la imagen y el texto */
+}
+
+.navbar-brand .brand-text {
+    font-size: 2rem; /* Aumenta el tamaño de fuente */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}
+
+.navbar-nav .nav-link {
+    font-size: 2.4rem; /* Aumenta el tamaño de fuente */
+    padding: 1.5rem 3rem; /* Aumenta el padding vertical y horizontal */
+}
+
+.main-container, .main-container-model {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Espacio entre las columnas */
+    padding: 10px;
+}
+
+.container, .modelo {
+    width: 32%; /* Un tercio de la página */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.modelo {
+    height: 90rem; /* Ajustar la altura para el modelo 3D y el mapa */
+}
+
+#map-container {
+    width: 66%; /* Dos tercios de la página */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart-container {
+    width: 100%; /* Ancho del 100% para ocupar todo el espacio disponible */
+    max-width: 55rem; /* Ancho máximo para evitar que la gráfica se extienda demasiado */
+    height: auto; /* Altura automática para hacerla responsive */
+    margin: auto; /* Centrar la gráfica horizontalmente */
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1rem; /* Disminuir margen superior */
+    margin-bottom: 2rem; /* Disminuir margen inferior */
+    font-size: 1.4rem; /* Aumentar el tamaño de la fuente en las tablas */
+}
+
+th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+#canvas, #mapa {
+    width: 100%;
+    height: 60rem; /* Disminuir la altura para el modelo 3D y el mapa */
+    background-color: #f0f0f0; /* Color de fondo para el contenedor del mapa */
+}
+
+.table-container {
+    width: 100%;
+    margin-top: 10px; /* Disminuir el margen superior */
+}
+
+/* Computadoras pequeñas y tablets en orientación horizontal */
+@media (min-width: 1024px) {
+    .main-container, .main-container-model {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px; /* Espacio entre los contenedores */
+    }
+}
+
+/* Tablets en orientación vertical */
+@media (max-width: 1024px) {
+    .container, .modelo, #map-container {
+        width: 100%; /* Ancho completo para cada contenedor */
+    }
+
+    .chart-container {
+        max-width: 100%; /* Ancho máximo al 100% */
+    }
+
+    .modelo, #map-container {
+        height: auto; /* Altura automática */
+    }
+
+    #canvas, #mapa {
+        height: 50rem; /* Altura ajustada para pantallas más pequeñas */
+    }
+}
+
+/* Celulares */
+@media (max-width: 768px) {
+    .container, .modelo, #map-container {
+        width: 100%; /* Ancho completo para cada contenedor */
+    }
+
+    .chart-container {
+        max-width: 100%; /* Ancho máximo al 100% */
+        height: 40rem; /* Incrementar la altura para gráficas más grandes */
+    }
+
+    .modelo, #map-container {
+        height: auto; /* Altura automática */
+        justify-content: center;
+        align-items: center;
+    }
+
+    #canvas, #mapa {
+        height: 50rem; /* Altura ajustada para pantallas más pequeñas */
+    }
+
+    /* Centrar el modelo y el mapa */
+    .main-container-model {
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .container, .modelo, #map-container {
+        width: 100%; /* Ancho completo para cada contenedor */
+    }
+
+    .chart-container {
+        max-width: 100%; /* Ancho máximo al 100% */
+        height: 35rem; /* Incrementar la altura para gráficas más grandes */
+    }
+
+    .modelo, #map-container {
+        height: auto; /* Altura automática */
+    }
+
+    #canvas, #mapa {
+        height: 50rem; /* Altura ajustada para pantallas más pequeñas */
+    }
+
+    /* Centrar el modelo y el mapa */
+    .main-container-model {
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+/* Tamaño más pequeño para las tablas de datos en X, Y, Z */
+table {
+    font-size: 1.2rem; /* Reducir el tamaño de la fuente en las tablas */
+    margin-top: 0.5rem; /* Disminuir el margen superior */
+    margin-bottom: 1rem; /* Disminuir el margen inferior */
+}
+
+/* Media query para ajustar el tamaño de las tablas en dispositivos más pequeños */
+@media (max-width: 768px) {
+    table {
+        font-size: 1rem; /* Reducir aún más el tamaño de la fuente en tablas para celulares */
+        margin-top: 0.3rem; /* Ajustar el margen superior */
+        margin-bottom: 0.8rem; /* Ajustar el margen inferior */
+    }
+}
